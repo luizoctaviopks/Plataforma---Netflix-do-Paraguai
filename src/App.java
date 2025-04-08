@@ -8,11 +8,13 @@ public class App {
      Scanner input = new Scanner(System.in);
      int opcao = -1;
      int opcao2 = 0;
+     
+     List<Filme> filmes = new ArrayList<>();
+     List<Serie> series = new ArrayList<>();
+     
 
 
   
-
-
         while (opcao != 0 ) {
 
                
@@ -27,9 +29,6 @@ public class App {
             opcao = input.nextInt();
             input.nextLine();
 
-                     List<Filme> filmes = new ArrayList<>();
-                     List<Serie> series = new ArrayList<>();
-                     
                      switch (opcao) {
 
 
@@ -57,38 +56,57 @@ public class App {
                 
                 //Remover conteudo.
                 case 2:
-                  
-                        System.out.println("Qual conteudo gostaria de remover?");
-                        System.out.println("1 - Filme");
-                        System.out.println("2 - Serie");
-                        opcao2 = input.nextInt();
-                        input.nextLine(); 
+                System.out.println("Qual conteudo gostaria de remover?");
+                System.out.println("1 - Filme");
+                System.out.println("2 - Serie");
+                opcao2 = input.nextInt();
+                input.nextLine();
             
-
-                        if(opcao2 == 1){
-                            AdicionarFilme(input, filmes);
-                            break;
-                        }
-
-
-                        if(opcao2 == 2){
-                            AdicionarSerie(input, series);
-                            break;                      
-                        }
-
-                    
+                if (opcao2 == 1) {
+                    RemoverFilme(input, filmes);
+                    break;
+                }
+            
+                if (opcao2 == 2) {
+                    RemoverSerie(input, series);
+                    break;
+                }
+                break;
         
-                //Exibir conteudo.
+               // Exibir conteúdo.
                 case 3:
-                  
+                    System.out.println("Qual conteúdo você deseja exibir?");
+                    System.out.println("1 - Filmes");
+                    System.out.println("2 - Séries");
+                    opcao2 = input.nextInt();
+                    input.nextLine();
+
+                        if (opcao2 == 1) {
+                            ExibirFilmes(filmes);
+                        } else if (opcao2 == 2) {
+                            ExibirSeries(series);
+                        }
+                    voltarMenu(input);
                     break;
-        
-                //Buscar conteudo por titulo.
+
+                // Buscar conteúdo por título.
                 case 4:
-                    
+                    System.out.println("Qual conteúdo deseja buscar?");
+                    System.out.println("1 - Filme");
+                    System.out.println("2 - Série");
+                    opcao2 = input.nextInt();
+                    input.nextLine();
+
+                    System.out.println("Digite o título para buscar:");
+                    String tituloBusca = input.nextLine();
+
+                        if (opcao2 == 1) {
+                            BuscarFilmePorTitulo(tituloBusca, filmes);
+                        } else if (opcao2 == 2) {
+                            BuscarSeriePorTitulo(tituloBusca, series);
+                        }
+                    voltarMenu(input);
                     break;
-        
-        
         
                 default:
                     break;
@@ -102,9 +120,108 @@ public class App {
             input.close();
         }
 
+        private static void ExibirFilmes(List<Filme> filmes) {
+            if (filmes.isEmpty()) {
+                System.out.println("Nenhum filme cadastrado.");
+                return;
+            }
+        
+            System.out.println("\n--- FILMES CADASTRADOS ---");
+            for (Filme filme : filmes) {
+                filme.exibirInfo();
+                System.out.println("-------------------------");
+            }
+        }
+        
+        private static void ExibirSeries(List<Serie> series) {
+            if (series.isEmpty()) {
+                System.out.println("Nenhuma série cadastrada.");
+                return;
+            }
+        
+            System.out.println("\n--- SÉRIES CADASTRADAS ---");
+            for (Serie serie : series) {
+                serie.exibirInfo();
+                System.out.println("-------------------------");
+            }
+        }
+        
+        private static void BuscarFilmePorTitulo(String titulo, List<Filme> filmes) {
+            boolean encontrado = false;
+            for (Filme filme : filmes) {
+                if (filme.getTitulo().equalsIgnoreCase(titulo)) {
+                    System.out.println("\nFilme encontrado:");
+                    filme.exibirInfo();
+                    encontrado = true;
+                    break;
+                }
+            }
+            if (!encontrado) {
+                System.out.println("Filme não encontrado.");
+            }
+        }
+        
+        private static void BuscarSeriePorTitulo(String titulo, List<Serie> series) {
+            boolean encontrado = false;
+            for (Serie serie : series) {
+                if (serie.getTitulo().equalsIgnoreCase(titulo)) {
+                    System.out.println("\nSérie encontrada:");
+                    serie.exibirInfo();
+                    encontrado = true;
+                    break;
+                }
+            }
+            if (!encontrado) {
+                System.out.println("Série não encontrada.");
+            }
+        }
+
+        private static void RemoverFilme(Scanner input, List<Filme> filmes) throws InterruptedException, IOException {
+            if (filmes.isEmpty()) {
+                System.out.println("Nenhum filme cadastrado.");
+                voltarMenu(input);
+                return;
+            }
+        
+            System.out.println("Digite o título do filme a ser removido:");
+            String titulo = input.nextLine();
+        
+            boolean removido = filmes.removeIf(filme -> filme.getTitulo().equalsIgnoreCase(titulo));
+        
+            if (removido) {
+                System.out.println("Filme removido com sucesso!");
+            } else {
+                System.out.println("Filme não encontrado.");
+            }
+        
+            voltarMenu(input);
+        }
+        
+        private static void RemoverSerie(Scanner input, List<Serie> series) throws InterruptedException, IOException {
+            if (series.isEmpty()) {
+                System.out.println("Nenhuma série cadastrada.");
+                voltarMenu(input);
+                return;
+            }
+        
+            System.out.println("Digite o título da série a ser removida:");
+            String titulo = input.nextLine();
+        
+            boolean removido = series.removeIf(serie -> serie.getTitulo().equalsIgnoreCase(titulo));
+        
+            if (removido) {
+                System.out.println("Série removida com sucesso!");
+            } else {
+                System.out.println("Série não encontrada.");
+            }
+        
+            voltarMenu(input);
+        }
 
 
-    private static void AdicionarFilme(Scanner input, List<Filme> filmes) throws InterruptedException, IOException {
+
+    private static void AdicionarFilme(Scanner input, List<Filme> filmes) throws InterruptedException, IOException {        
+       
         System.out.println("Qual o titulo?");
         String titulo = input.nextLine();
       
@@ -134,6 +251,7 @@ public class App {
     }
      
     private static void AdicionarSerie(Scanner input, List<Serie> series) throws InterruptedException, IOException {
+        
         System.out.println("Qual o titulo?");
         String titulo = input.nextLine();
       
